@@ -2,13 +2,15 @@ package com.example.c3451748.todolist;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import java.util.ArrayList;
 
 /**
  * Created by c3451748 on 04/10/2017.
  * https://www.youtube.com/watch?v=RXtj4TxMmW0
- * This is a new line in to test the pull function on github!!!
  */
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -19,14 +21,13 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String DB_COLUMN="TaskName";
 
 
-    public DbHelper(Context context) {
-        super(context, DB_NAME, null, DB_VER);
+    public DbHelper(Context context) { super(context, DB_NAME, null, DB_VER);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        String query = String.format("CREATE TABLE %s {ID INTEGER PRIMARY KEY AUTOINCREMENT, %s  TEXT NOT NULL", DB_TABLE, DB_COLUMN);
+        String query = String.format("CREATE TABLE %s {ID INTEGER PRIMARY KEY AUTOINCREMENT, %s  TEXT NOT NULL);", DB_TABLE, DB_COLUMN);
         db.execSQL(query);
 
 
@@ -53,6 +54,22 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db= this.getWritableDatabase();
         db.delete(DB_TABLE,DB_COLUMN + " = ?", new String [] {task} );
         db.close();
+
+    }
+
+    public ArrayList<String> getTaskList(){
+        ArrayList<String> taskList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(DB_TABLE,new String[]{DB_COLUMN},null, null, null, null, null);
+
+        while(cursor.moveToNext()){
+            int index = cursor.getColumnIndex(DB_COLUMN);
+            taskList.add(cursor.getString(index));
+        }
+
+        cursor.close();
+        db.close();
+        return taskList;
 
     }
 }
