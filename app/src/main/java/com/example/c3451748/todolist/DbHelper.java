@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
 import java.util.ArrayList;
 
 /**
@@ -20,17 +19,14 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String DB_TABLE="Task";
     public static final String DB_COLUMN="TaskName";
 
-
-    public DbHelper(Context context) { super(context, DB_NAME, null, DB_VER);
+    public DbHelper(Context context) { 
+        super(context, DB_NAME, null, DB_VER);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
-        String query = String.format("CREATE TABLE %s {ID INTEGER PRIMARY KEY AUTOINCREMENT, %s  TEXT NOT NULL);", DB_TABLE, DB_COLUMN);
+        String query = String.format("CREATE TABLE %s (ID INTEGER PRIMARY KEY AUTOINCREMENT, %s  TEXT NOT NULL);", DB_TABLE, DB_COLUMN);
         db.execSQL(query);
-
-
     }
 
     @Override
@@ -38,7 +34,6 @@ public class DbHelper extends SQLiteOpenHelper {
         String query = String.format("DELETE TABLE IF EXISTS &s", DB_TABLE);
         db.execSQL(query);
         onCreate(db);
-
     }
 
     public void insertNewTask(String task) {
@@ -47,14 +42,12 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put(DB_COLUMN, task);
         db.insertWithOnConflict(DB_TABLE,null,values,SQLiteDatabase.CONFLICT_REPLACE);
         db.close();
-
     }
 
     public void deleteTask(String task){
         SQLiteDatabase db= this.getWritableDatabase();
         db.delete(DB_TABLE,DB_COLUMN + " = ?", new String [] {task} );
         db.close();
-
     }
 
     public ArrayList<String> getTaskList(){
@@ -70,6 +63,5 @@ public class DbHelper extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return taskList;
-
     }
 }
